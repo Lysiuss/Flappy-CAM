@@ -7,7 +7,7 @@ from os.path import isfile, join
 import easygui
 from random import randint
 import os
-
+import time
 
 #Enter your directory where you put the Flappy Bird in order to be able to launch the code
 
@@ -74,22 +74,21 @@ floor_name = "Default"
 difficulty = "1"
 pipes_color = "Green"
 
-def settings():
-        while change_settings != "None":
-            changement_settings = easygui.enterbox("What setting do you want to change : Floor, Background, Difficulty, Pipes color, or None ?")
-            if changement_settings == "Floor":
-                floor_name = easygui.enterbox("Choose the floor of the flappy bird : "+floor_image[0]+", "+floor_image[1]+".")
-            elif changement_settings == "Background":
-                background_name = easygui.enterbox("You can choose on which background you want to play ! Choose wisely... You can play on : "+background_image[0]+", "+background_image[1]+", "+background_image[2]+".")
-            elif changement_settings == "Difficulty":
-                difficulty = easygui.enterbox("Choose your difficulty : 1 = Normal, 2 = Hard, 3 = Extreme")
-            elif changement_settings == "Pipes color":
-                pipes_color = easygui.enterbox("Choose the color of the pipes you want : Red, Blue, Yellow, Green or Multicolor (epileptics --> Careful !)")
-            else:
-                break
+while change_settings != "None":
+    changement_settings = easygui.enterbox("What setting do you want to change : Floor, Background, Difficulty, Pipes color, or None ?")
+    if changement_settings == "Floor":
+        floor_name = easygui.enterbox("Choose the floor of the flappy bird : "+floor_image[0]+", "+floor_image[1]+".")
+    elif changement_settings == "Background":
+        background_name = easygui.enterbox("You can choose on which background you want to play ! Choose wisely... You can play on : "+background_image[0]+", "+background_image[1]+", "+background_image[2]+".")
+    elif changement_settings == "Difficulty":
+        difficulty = easygui.enterbox("Choose your difficulty : 1 = Normal, 2 = Hard, 3 = Extreme")
+    elif changement_settings == "Pipes color":
+        pipes_color = easygui.enterbox("Choose the color of the pipes you want : Red, Blue, Yellow, Green or Multicolor (epileptics --> Careful !)")
+    else:
+        break
 
 
-
+print(pipes_color)
 pygame.init()
 
 screen = pygame.display.set_mode((1600,1065))
@@ -111,6 +110,13 @@ width = screen.get_width()
 height = screen.get_height()
 smallfont = pygame.font.SysFont('Corbel',35)
 text = smallfont.render('quit' , True , color)
+
+# Game sounds
+GAME_SOUNDS = {}
+GAME_SOUNDS['die'] = pygame.mixer.Sound(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Sounds\die.wav'))
+GAME_SOUNDS['hit'] = pygame.mixer.Sound(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Sounds\hit.wav'))
+GAME_SOUNDS['point'] = pygame.mixer.Sound(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Sounds\point.wav'))
+GAME_SOUNDS['wing'] = pygame.mixer.Sound(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Sounds\wing.wav'))
 
 
 #game variables
@@ -172,17 +178,17 @@ def move_pipe(pipes):
 
 def show_pipe(pipes):
     for pipex in pipes:
+        if pipes_color == "Multicolor":
+            number_pipe = randint(0,3)
+        elif pipes_color == "Green":
+            number_pipe = 0
+        elif pipes_color == "Yellow":
+            number_pipe = 2
+        elif pipes_color == "Blue":
+            number_pipe = 1
+        elif pipes_color == "Red":
+            number_pipe = 3
         if pipex.bottom>600:
-            if pipes_color == "Multicolor":
-                number_pipe = randint(0,3)
-            elif pipes_color == "Green":
-                number_pipe = 0
-            elif pipes_color == "Yellow":
-                number_pipe = 2
-            elif pipes_color == "Blue":
-                number_pipe = 1
-            elif pipes_color == "Red":
-                number_pipe = 3
             screen.blit(pipe[number_pipe], pipex)
         else:
             screen.blit(pygame.transform.flip(pipe[number_pipe],False, True), pipex)
@@ -190,12 +196,14 @@ def show_pipe(pipes):
 def check_collision(pipes):
     for pipex in pipes:
         if bird_rect.colliderect(pipex):
+            GAME_SOUNDS['hit'].play()
             return True
     return False
 
 def rcheck_collision(pipes):
     for pipex in pipes:
         if bird2_rect.colliderect(pipex):
+            GAME_SOUNDS['hit'].play()
             return True
     return False
 
@@ -227,9 +235,9 @@ def playerwins(who):
     over = game_over.render(who+" wins!!", True, (0,230,23))
     screen.blit(over, (15,200))
 
-bird2 = pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_one_avatar))).convert_alpha()
-bird1 = pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_one_avatar))).convert_alpha()
-bird3 = pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_one_avatar))).convert_alpha()
+bird2 = pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_one_avatar))).convert_alpha()
+bird1 = pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_one_avatar))).convert_alpha()
+bird3 = pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_one_avatar))).convert_alpha()
 birdlist = [bird1, bird2, bird3]
 bird_index = 0
 bird = birdlist[bird_index]
@@ -241,17 +249,17 @@ pygame.time.set_timer(BIRDFLAP, 200)
 #second bird info
 if number_players == "2" :
 
-    bird2_1 = pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_two_avatar))).convert_alpha()
-    bird2_2 = pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_two_avatar))).convert_alpha()
-    bird2_3 = pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_two_avatar))).convert_alpha()
+    bird2_1 = pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_two_avatar))).convert_alpha()
+    bird2_2 = pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_two_avatar))).convert_alpha()
+    bird2_3 = pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\Bird image\{}.png'.format(player_two_avatar))).convert_alpha()
     bird2list = [bird2_1, bird2_2, bird2_3]
     bird2index = 1
     bird2 = bird2list[bird2index]
     bird2_rect = bird2.get_rect(center=(50,300))
     bird2_movement = 0
 
-pipe = [pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_green.png')), pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_blue.png')), pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_yellow.png')), pygame.image.load(os.path.join(path_dir, 'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_red.png'))]
-print(pipe)
+pipe = [pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_green.png')), pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_blue.png')), pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_yellow.png')), pygame.image.load(os.path.join(path_dir, r'Flappy Bird\local-multiplayer-flappy-bird-main\PipesFolder\pipe_red.png'))]
+
 
 for i in range (0, len(pipe)):
     pipe[i] = pygame.transform.scale(pipe[i],(80,600))
@@ -282,15 +290,23 @@ while True:
             if event.key==pygame.K_SPACE:
                 bird_movement=0
                 bird_movement -=7
+                GAME_SOUNDS['wing'].play()
             if event.key ==pygame.K_UP and number_players == "2":
                 bird2_movement = 0
                 bird2_movement -=7
+                GAME_SOUNDS['wing'].play()
             if event.key == pygame.K_r and game_active==False:
                 game_active = True
             if event.key == pygame.K_RETURN:
                 state = pause
             if event.key == pygame.K_BACKSPACE:
                 state = running
+
+        #Test button
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
+                pygame.quit()
 
         if event.type == SPAWNPIPE and game_active and state == running:
             pipe_list.extend(create_pipe())
@@ -347,6 +363,8 @@ while True:
                 score = 0
                 high_score_display()
                 playertwo = True
+                time.sleep(0.5)
+                GAME_SOUNDS['die'].play()
             if number_players == "2":
                 if rcheck_collision(pipe_list) or bird2_rect.centery>494:
                     game_active = False
@@ -358,6 +376,8 @@ while True:
                     score = 0
                     high_score_display()
                     playerone = True
+                    time.sleep(0.5)
+                    GAME_SOUNDS['die'].play()
             #pipe movement
             pipe_list = move_pipe(pipe_list)
             show_pipe(pipe_list)
@@ -368,6 +388,7 @@ while True:
                 floorsX = 0
             if len(pipe_list) > 7 and  pipe_list[-8].centerx==bird_rect.centerx:
                 score +=1
+                GAME_SOUNDS['point'].play()
             if score > high_score:
                 high_score = score
 
@@ -380,6 +401,12 @@ while True:
             screen.blit(high_score_aff, (690, 400))
             screen.blit(pause_text, (692, 200))
             screen.blit(pause_text2, (590, 300))
+            mouse = pygame.mouse.get_pos()
+            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
+                pygame.draw.rect(screen,color_light,[width/2,height/2,140,40])
+            else:
+                pygame.draw.rect(screen,color_dark,[width/2,height/2,140,40])
+            screen.blit(text , (width/2+35,height/2))
 
     elif not first_try:
         if number_players== "2":
