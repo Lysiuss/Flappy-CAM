@@ -223,12 +223,14 @@ def welcome():
     over = game_over.render("Welcome!! ", True, (0,0,230))
     ll = game_font2.render("Press R to play !", True,(0,0,230))
     if number_players == "1":
-        touche = game_font2.render("Jump = Space", True,(0,0,230))
+        touche = game_font2.render("Jump = [Space]", True,(0,0,230))
     if number_players == "2":
-        touche = game_font2.render("Jump (Player 1) : Space, Jump (Player 2) : UP_Arrow", True,(0,0,230))
+        touche = game_font2.render("Jump (Player 1) : [Space], Jump (Player 2) : [UP_Arrow]", True,(0,0,230))
+    pausetext = game_font2.render("You can pause the game at any given moment by pressing [Enter]")
     screen.blit(over, (15,255))
     screen.blit(ll, (25,320))
     screen.blit(touche, (25, 380))
+    screen.blit(touche2)
 
 
 def playerwins(who):
@@ -305,7 +307,7 @@ while True:
         #Test button
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
+            if width/2-90 <= mouse[0] <= width/2+50 and height/2+40 <= mouse[1] <= height/2+60:
                 pygame.quit()
 
         if event.type == SPAWNPIPE and game_active and state == running:
@@ -402,11 +404,11 @@ while True:
             screen.blit(pause_text, (692, 200))
             screen.blit(pause_text2, (590, 300))
             mouse = pygame.mouse.get_pos()
-            if width/2 <= mouse[0] <= width/2+140 and height/2 <= mouse[1] <= height/2+40:
-                pygame.draw.rect(screen,color_light,[width/2,height/2,140,40])
+            if width/2-90 <= mouse[0] <= width/2+50 and height/2+40 <= mouse[1] <= height/2+60:
+                pygame.draw.rect(screen,color_light,[width/2-90,height/2+40,140,40])
             else:
-                pygame.draw.rect(screen,color_dark,[width/2,height/2,140,40])
-            screen.blit(text , (width/2+35,height/2))
+                pygame.draw.rect(screen,color_dark,[width/2-90,height/2+40,140,40])
+            screen.blit(text , (width/2-50,height/2+40))
 
     elif not first_try:
         if number_players== "2":
@@ -427,15 +429,15 @@ while True:
     clock.tick(64)
 
 
-#rajouter du son (valoche)
+
 #rajouter une icone (valoche)
-#rajouter temps après pause et afficher jeu (bizarre)
-#vies tout seul (lié difficulté) --> faisable (romain)
-#change settings ? button --> return au top
-#faire (rapport romain : 	Les objectifs fonctionnels recherchés;	Les choix de design UI/UX; Les problèmes rencontrés et leur résolution(valoche) En conclusion : l’état actuel du projet et les pistes d’évolutions envisagées) (database valoche + github) (UML mathilde)
+#faire (rapport romain : Les objectifs fonctionnels recherchés;	Les choix de design UI/UX; Les problèmes rencontrés et leur résolution(valoche) En conclusion : l’état actuel du projet et les pistes d’évolutions envisagées) (database valoche + github) (UML mathilde)
 
 
 #Si temps:
 
+#vies tout seul (lié difficulté) --> faisable (romain)
 #mettre des boutons dans le menu (et enlever numéro du coup si ok) --> chaud du cul
 #randomize les pipes (réflexion à faire --> pas sûr)
+#rajouter temps après pause et afficher jeu (bizarre)
+#rajouter touche controle personalisable
