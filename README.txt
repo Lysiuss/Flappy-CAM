@@ -1,6 +1,6 @@
 Welcome into our Flappy'CAM project !
 
-First, you have to install our project first by executing the Flappy'CAM.exe.
+First, you have to install our project through github (Clone code --> Download .ZIP), and then you have to execute the Flappy'CAM.exe.
 During installation, you need to choose the C:\ directory because we have files which are called into our script which will not be found if you put it anywhere else than "C:\".
 (We did this to have you do as less things as possible to launch the game)
 
